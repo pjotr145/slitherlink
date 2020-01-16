@@ -3,10 +3,11 @@
 import glob
 import numpy as np
 
+
 def list_file_names(globber):
     ''' With given expression returns list of files in current dir.
     '''
-    return glob.glob(globber)
+    return glob.glob('**/'+globber)
 
 
 def get_file_name(globber):
