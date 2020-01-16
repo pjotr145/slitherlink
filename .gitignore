@@ -123,3 +123,5 @@ pip-selfcheck.json
 
 # tst dir. Used for quick testing.
 tst/
+# vim swap files
+.*.swp
