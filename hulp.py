@@ -1,13 +1,16 @@
 #!/usr/bin/env python
+''' Some helpfull functions.
+'''
 
 import glob
 import numpy as np
 
 
 def list_file_names(globber):
-    ''' With given expression returns list of files in current dir.
+    ''' With given expression returns list of files.
+        With ** this function searches recursively.
     '''
-    return glob.glob('**/'+globber)
+    return glob.glob('**/' + globber)
 
 
 def get_file_name(globber):
@@ -16,8 +19,10 @@ def get_file_name(globber):
     '''
     files = list_file_names(globber)
     files.sort()
-    for i in range(len(files)):
-        print("{:>3}) {}".format(i, files[i]))
+    for idx, val in enumerate(files):
+        print("{:>3}) {}".format(idx, val))
+#    for i in range(len(files)):
+#        print("{:>3}) {}".format(i, files[i]))
     filenmr = input("Kies een file: ")
     try:
         number = int(filenmr)
@@ -46,7 +51,8 @@ def _merge_ver_and_hor(ver_walls, hor_walls):
         Returns 1D list with all walls from left-top to right-bottom.
     '''
     all_walls = []
-    for i in range(len(ver_walls)):
+#    for i in range(len(ver_walls)):
+    for i, _ in enumerate(ver_walls):
         all_walls += hor_walls[i]
         all_walls += ver_walls[i]
     all_walls += hor_walls[-1]
@@ -65,6 +71,37 @@ def translate_walls_to_01s(my_list):
     return binary_walls
 
 
+def walls_to_01s(list_of_walls):
+    ''' Walls are spaces, -'s or |'s. These are "0" for spaces
+        and "1" fore the - or |.
+    '''
+    the_walls = []
+    for i in list_of_walls:
+        if i == ' ':
+            the_walls += [0]
+        else:
+            the_walls += [1]
+    return np.array(the_walls)
+
+
+def rooms_to_1d(list_of_rooms):
+    ''' Flatten the 2D lists of rooms to a 1D list.
+    '''
+    return [x for sublist in list_of_rooms for x in sublist]
+
+
+def rooms_to_integers(list_of_rooms):
+    ''' Converts empty rooms to 9 and rooms with values to integers.
+    '''
+    all_rooms = []
+    for i in list_of_rooms:
+        if i == ' ':
+            all_rooms += [9]
+        else:
+            all_rooms += [int(i)]
+    return all_rooms
+
+
 def get_walls_and_rooms(content):
     ''' Finds all the walls and rooms in content array.
     Returns 2 arrays for the walls and rooms.
@@ -76,8 +113,11 @@ def get_walls_and_rooms(content):
 
     horizontal_walls = _get_walls(content, hor_wall_lines, ver_wall_lines)
     vertical_walls = _get_walls(content, ver_wall_lines, hor_wall_lines)
-    all_walls = _merge_ver_and_hor(vertical_walls, horizontal_walls)
+    walls = _merge_ver_and_hor(vertical_walls, horizontal_walls)
+    all_walls = walls_to_01s(walls)
     rooms = _get_walls(content, ver_wall_lines, ver_wall_lines)
+    rooms = rooms_to_1d(rooms)
+    rooms = rooms_to_integers(rooms)
     return all_walls, rooms
 
 
@@ -86,18 +126,18 @@ def find_walls_per_room(dimension):
         are around each room. For each room shows 0's for no wall and 1's
         for a wall.
     '''
-    DIM = int((dimension + 1) / 2)
-    aant_kamers = (DIM - 1) * (DIM - 1)
-    gen_length = 2 * DIM * (DIM - 1)
+    dim = int((dimension + 1) / 2)
+    aant_kamers = (dim - 1) * (dim - 1)
+    gen_length = 2 * dim * (dim - 1)
     walls_for_rooms = []
     for teller in range(aant_kamers):
-        regel = np.zeros(gen_length, dtype = int)
-        mymod, rest = divmod(teller, DIM - 1)
-        first_one = mymod * (2 * DIM - 1) + rest
+        regel = np.zeros(gen_length, dtype=int)
+        mymod, rest = divmod(teller, dim - 1)
+        first_one = mymod * (2 * dim - 1) + rest
         regel[first_one] = 1
-        regel[first_one + DIM] = 1
-        regel[first_one + DIM - 1] = 1
-        regel[first_one + DIM + DIM - 1] = 1
+        regel[first_one + dim] = 1
+        regel[first_one + dim - 1] = 1
+        regel[first_one + dim + dim - 1] = 1
         walls_for_rooms.append(regel)
     return walls_for_rooms
 
@@ -105,11 +145,18 @@ def find_walls_per_room(dimension):
 def find_index_all_ones(my_list):
     ''' Finds indices of all the 1's in a list.
     '''
-    indices = [i for i, x in enumerate(my_list) if x == 1]
-    return indices
+    return [i for i, x in enumerate(my_list) if x == 1]
 
 
-def wall_indices_per_room(dimension):
+def find_index_no_nine(my_list):
+    ''' Finds indices for all fields that are not nine.
+        These are the rooms that have a value in the puzzle.
+        A 9 means no-value in the puzzle.
+    '''
+    return [i for i, x in enumerate(my_list) if x != 9]
+
+
+def get_wall_indices_per_room(dimension):
     ''' Per room calculates which indices of the walls-list belong
         to that room. So calculats which walls belong to each room.
         Returns list with list of 4 indices for each room.
@@ -120,4 +167,3 @@ def wall_indices_per_room(dimension):
         these_indices = find_index_all_ones(line)
         indices_per_room.append(these_indices)
     return indices_per_room
-
