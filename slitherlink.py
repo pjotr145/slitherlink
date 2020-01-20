@@ -43,6 +43,12 @@ population = Population(gene_length,
                         room_with_value_index,
                         SETTINGS)
 population.calc_fitnesses()
-population.sort_pop_on_fitness()
-print("Walls: {}".format(all_walls))
-print("Walls: {}".format(find_index_all_ones(all_walls)))
+#population.sort_pop_on_fitness()
+#print("Walls: {}".format(all_walls))
+#print("Walls: {}".format(find_index_all_ones(all_walls)))
+for _ in range(100):
+    population.get_new_pop_superras()
+    # TODO: still needs mutation of the new genes
+    population.calc_fitnesses()
+    population.sort_pop_on_fitness()
+    print("Fittest ind: {}".format(population.pop[-1].fitness))
