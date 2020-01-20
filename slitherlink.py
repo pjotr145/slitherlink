@@ -15,10 +15,13 @@ with open(SETTINGS_FILE) as f:
 
 # Read the puzzle
 filename = get_file_name(FILE_EXPR)
+#filename = "puzzles/puzzle-20181212.txt"
 with open(filename) as f:
     content = f.read().splitlines()
 
 all_walls, all_rooms = get_walls_and_rooms(content)
+gene_length = len(all_walls)
+all_walls_index = find_index_all_ones(all_walls)
 wall_index_per_room = get_wall_indices_per_room(len(content))
 room_with_value_index = find_index_no_nine(all_rooms)
 
@@ -33,7 +36,13 @@ room_with_value_index = find_index_no_nine(all_rooms)
 #print("Walls: {}".format(all_walls))
 #print("Walls: {}".format(wall_index_per_room))
 
-population = Population(all_walls, all_rooms, wall_index_per_room,
-                        room_with_value_index, SETTINGS)
+population = Population(gene_length,
+                        all_walls_index,
+                        all_rooms,
+                        wall_index_per_room,
+                        room_with_value_index,
+                        SETTINGS)
+population.calc_fitnesses()
+population.sort_pop_on_fitness()
 print("Walls: {}".format(all_walls))
 print("Walls: {}".format(find_index_all_ones(all_walls)))
