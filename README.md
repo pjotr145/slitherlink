@@ -1,4 +1,5 @@
 # slitherlink
 An attempt to solve slitherlink with a GA
 
-Just started so still a work in progress.  ;-)
+Settings can be changed in settings.yaml
+Can be started with slitherlink.py
