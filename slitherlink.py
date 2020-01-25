@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import yaml
+import gui
 from hulp import get_file_name, get_walls_and_rooms
 from hulp import get_wall_indices_per_room, find_index_no_nine
-from hulp import find_index_all_ones
+from hulp import find_index_all_ones, printable_rooms, split_gene_into_puzzle
 from population import Population
 
 FILE_EXPR = "puzzle*.txt"
@@ -24,6 +25,7 @@ gene_length = len(all_walls)
 all_walls_index = find_index_all_ones(all_walls)
 wall_index_per_room = get_wall_indices_per_room(len(content))
 room_with_value_index = find_index_no_nine(all_rooms)
+rooms_to_print = printable_rooms(len(content), all_rooms)
 
 #for idx, val in enumerate(content):
 #    print("{:>3})  {}".format(idx, val))
@@ -34,8 +36,11 @@ room_with_value_index = find_index_no_nine(all_rooms)
 #print("R-val: {}".format(room_with_value_index))
 #print("Rooms: {}".format(all_rooms))
 #print("Walls: {}".format(all_walls))
+#print("Print: {}".format(rooms_to_print))
 #print("Walls: {}".format(wall_index_per_room))
 
+frame = gui.Window()
+frame.geometry("{0}x{1}".format(1024, 1024))
 population = Population(gene_length,
                         all_walls_index,
                         all_rooms,
@@ -43,13 +48,23 @@ population = Population(gene_length,
                         room_with_value_index,
                         SETTINGS)
 population.calc_fitnesses()
-#population.sort_pop_on_fitness()
+population.sort_pop_on_fitness()
+print("Generatie: {:>3} -> Fittest ind: {}".format(0, population.pop[0].fitness))
+#frame.teken_puzzle(int((len(content) + 1) / 2), population.pop[0].gene)
+gene_to_print = split_gene_into_puzzle(9, population.pop[0].gene)
+frame.setWaardes(rooms_to_print, gene_to_print)
+
 #print("Walls: {}".format(all_walls))
 #print("Walls: {}".format(find_index_all_ones(all_walls)))
-for generation_count in range(100):
+for generation_count in range(1, 1 + SETTINGS["aant_generaties"]):
     population.get_new_pop_superras()
     # TODO: still needs mutation of the new genes
     population.calc_fitnesses()
     population.sort_pop_on_fitness()
+    gene_to_print = split_gene_into_puzzle(9, population.pop[0].gene)
+    frame.setWaardes(rooms_to_print, gene_to_print)
+    frame.update()
     print("Generatie: {:>3} -> Fittest ind: {}".format(generation_count,
                                                        population.pop[0].fitness))
+print("Einde!")
+frame.mainloop()

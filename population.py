@@ -9,6 +9,19 @@ class Population():
     ''' Defining a population. Functions to create new generations
         should go here.
     '''
+
+    def create_one_individual(self, gene):
+        ''' Creating one individual so that only a gene needs to be
+            added as a parameter.
+        '''
+        one_individual = Individual(gene,
+                                    self.gene_length,
+                                    self.all_walls,
+                                    self.all_rooms,
+                                    self.wall_index_per_room,
+                                    self.room_value_index)
+        return one_individual
+
     def __init__(self,
                  gene_length,
                  all_walls,
@@ -16,7 +29,7 @@ class Population():
                  wall_index_per_room,
                  room_value_index,
                  settings):
-        ''' The init
+        ''' The initialization of a population.
         '''
         self.gene_length = gene_length
         self.all_walls = all_walls
@@ -44,7 +57,7 @@ class Population():
 
 
     def calc_fitnesses(self):
-        ''' Calculate the fitness for each indiviual.
+        ''' Calculate the fitness for each indiviual in the population.
         '''
         for individual in self.pop:
             individual.calc_fitness()
@@ -56,15 +69,6 @@ class Population():
         self.pop.sort(key=lambda x: x.fitness, reverse=False)
 #        for ind, gene in enumerate(self.pop):
 #            print("ind: {:>3} has fitness: {}".format(ind, gene.fitness))
-
-    def create_one_individual(self, gene):
-        one_individual = Individual(gene,
-                                    self.gene_length,
-                                    self.all_walls,
-                                    self.all_rooms,
-                                    self.wall_index_per_room,
-                                    self.room_value_index)
-        return one_individual
 
     def get_new_pop_superras(self):
         ''' Create new generation following the Superras method.

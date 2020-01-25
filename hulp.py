@@ -4,6 +4,7 @@
 
 import glob
 import numpy as np
+from itertools import islice
 
 
 def list_file_names(globber):
@@ -104,7 +105,7 @@ def rooms_to_integers(list_of_rooms):
 
 def get_walls_and_rooms(content):
     ''' Finds all the walls and rooms in content array.
-    Returns 2 arrays for the walls and rooms.
+        Returns 2 arrays for the walls and rooms.
     '''
     ver_wall_lines = range(1, len(content), 2)
     hor_wall_lines = range(0, len(content), 2)
@@ -167,3 +168,43 @@ def get_wall_indices_per_room(dimension):
         these_indices = find_index_all_ones(line)
         indices_per_room.append(these_indices)
     return indices_per_room
+
+
+def _chunks(this_list, chunk_size):
+    ''' Splits a list into chunk_size chunks.
+        If list length is not n*chunk_size then last chunk will be smaller.
+        Returns a generator
+    '''
+    for i in range(0, len(this_list), chunk_size):
+        yield this_list[i:i+chunk_size]
+
+
+def printable_rooms(dimension, rooms):
+    ''' All the rooms are integers but printing needs strings.
+        Also the empty rooms are shown as 9's but should be spaces.
+    '''
+    dimension = int((dimension - 1) / 2)
+    rooms_to_print = []
+    for i in rooms:
+        if i == 9:
+            rooms_to_print.append(' ')
+        else:
+            rooms_to_print.append(str(i))
+    return list(_chunks(rooms_to_print, dimension))
+
+
+def _create_split_list(dim):
+    ''' Creates list alternating dim and dim + 1 and adds another dim.
+        example dim=2 => [2, 3, 2, 3, 2]
+    '''
+    split_list = []
+    for i in range(dim):
+        split_list += [dim, dim + 1]
+    split_list += [dim]
+    return split_list
+
+
+def split_gene_into_puzzle(dimension, gene):
+    it = iter(gene)
+    split_list = _create_split_list(dimension)
+    return [list(islice(it, i)) for i in split_list]
