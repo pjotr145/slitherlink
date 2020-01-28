@@ -13,13 +13,15 @@ class Individual():
                  all_walls,
                  all_rooms,
                  wall_index_per_room,
-                 room_value_index):
+                 room_value_index,
+                 dot_wall_indices):
         self.gene = the_gene
         self.gene_length = gene_length
         self.walls = all_walls
         self.rooms = all_rooms
         self.wall_indexes = wall_index_per_room
         self.room_value_index = room_value_index
+        self.dot_wall_indices = dot_wall_indices
         self.fitness = 0
 
 #        print("ind: rooms: {}".format(self.rooms))

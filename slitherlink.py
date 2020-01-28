@@ -48,6 +48,7 @@ population = Population(gene_length,
                         all_rooms,
                         wall_index_per_room,
                         room_with_value_index,
+                        dot_wall_indices,
                         SETTINGS)
 population.calc_fitnesses()
 population.sort_pop_on_fitness()

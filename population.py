@@ -18,7 +18,8 @@ class Population():
                                     self.all_walls,
                                     self.all_rooms,
                                     self.wall_index_per_room,
-                                    self.room_value_index)
+                                    self.room_value_index,
+                                    self.dot_wall_indices)
         return one_individual
 
     def __init__(self,
@@ -27,6 +28,7 @@ class Population():
                  all_rooms,
                  wall_index_per_room,
                  room_value_index,
+                 dot_wall_indices,
                  settings):
         ''' The initialization of a population.
         '''
@@ -35,6 +37,7 @@ class Population():
         self.all_rooms = all_rooms
         self.wall_index_per_room = wall_index_per_room
         self.room_value_index = room_value_index
+        self.dot_wall_indices = dot_wall_indices
         self.settings = settings
         print("New population")
 
@@ -50,7 +53,8 @@ class Population():
                                         self.all_walls,
                                         self.all_rooms,
                                         self.wall_index_per_room,
-                                        self.room_value_index)
+                                        self.room_value_index,
+                                        dot_wall_indices)
             self.pop.append(one_individual)
 #            print("pop: indiv-nmr: {}".format(i))
 
