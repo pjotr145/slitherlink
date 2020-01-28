@@ -6,6 +6,7 @@ from hulp import get_file_name, get_walls_and_rooms
 from hulp import get_wall_indices_per_room, find_index_no_nine
 from hulp import find_index_all_ones, printable_rooms, split_gene_into_puzzle
 from population import Population
+from dot import get_dots_wall_indices
 
 FILE_EXPR = "puzzle*.txt"
 SETTINGS_FILE = "settings.yaml"
@@ -26,6 +27,7 @@ all_walls_index = find_index_all_ones(all_walls)
 wall_index_per_room = get_wall_indices_per_room(len(content))
 room_with_value_index = find_index_no_nine(all_rooms)
 rooms_to_print = printable_rooms(len(content), all_rooms)
+dot_wall_indices = get_dots_wall_indices(int((len(content) + 1) / 2))
 
 #for idx, val in enumerate(content):
 #    print("{:>3})  {}".format(idx, val))

@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+''' class definition for the individuals. '''
 
-import numpy as np
 import random
+import numpy as np
 from room import Room
 
 class Individual():
@@ -42,6 +42,10 @@ class Individual():
             self.fitness += room.room_score(self.gene)
 
     def mutate_gene(self, mutation_rate):
+        ''' Mutation of the gene. Mutation_rate is the max number of places
+            that a gene can change. There is a change that 0 changes will be
+            made but most of the time multiple changes should occur.
+        '''
         number_of_changes = np.random.randint(mutation_rate)
         genes_to_change = random.sample(range(len(self.gene)),
                                         number_of_changes)
@@ -53,6 +57,8 @@ class Individual():
                 self.gene[i] = 0
 
     def set_fixed_walls(self):
+        ''' Make sure that the walls given by the puzzle remain set.
+        '''
         for i in self.walls:
             self.gene[i] = 1
 

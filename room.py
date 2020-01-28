@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ''' Class definition of a single room with a given value.
 '''
 
