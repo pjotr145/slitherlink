@@ -1,8 +1,10 @@
 ''' Creating a population.
 '''
 
+import random
 from individual import Individual
 import numpy as np
+
 
 class Population():
     ''' Defining a population. Functions to create new generations
@@ -87,6 +89,27 @@ class Population():
             new_pop.append(self.create_one_individual(gene_a))
             new_pop.append(self.create_one_individual(gene_b))
         for individual in new_pop[2:]:
+            individual.mutate_gene(self.settings['mutation_rate'])
+            individual.set_fixed_walls()
+        self.pop = new_pop
+
+    def get_new_pop_elitism(self):
+        ''' Create a new generation following the Elitism method.
+        '''
+        select_pop = []
+        self.sort_pop_on_fitness()
+        new_pop = self.pop[0:self.settings['elite_size']]
+        for i in new_pop:
+            select_pop.append(i)
+        for _ in range(int((self.settings['population_size'] - 2) / 2)):
+            breed = random.sample(select_pop, 2)
+            split = np.random.randint(self.gene_length)
+#            print("Breed: {}".format(breed[0].gene))
+            gene_a = np.append(breed[0].gene[:split], breed[1].gene[split:])
+            gene_b = np.append(breed[1].gene[:split], breed[0].gene[split:])
+            new_pop.append(self.create_one_individual(gene_a))
+            new_pop.append(self.create_one_individual(gene_b))
+        for individual in new_pop[self.settings['elite_size']:]:
             individual.mutate_gene(self.settings['mutation_rate'])
             individual.set_fixed_walls()
         self.pop = new_pop

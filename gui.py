@@ -9,6 +9,7 @@ class Window(Tk):
         self.title("Kamertje Verhuur")
 #        self['bg'] = 'red'
         #self.minsize("600x400")
+        self.schermhoogte = 600
         self.lijst_kamer_waardes = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
                                     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
                                     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -42,7 +43,7 @@ class Window(Tk):
 
 
     def maakCanvas(self):
-        pixels = 90
+        pixels = self.schermhoogte / 12
         font = int(pixels / 5)
         len_list = int(len(self.lijst_lijnen) / 2) + 1
         width_list = len(self.lijst_lijnen[1])
@@ -105,3 +106,9 @@ class Window(Tk):
         self.lijst_lijnen = lijnen
         self.canvas.delete("all")
         self.maakCanvas()
+
+    def set_schermhoogte(self, schermhoogte):
+        self.schermhoogte = schermhoogte
+        self.canvas.delete("all")
+        self.maakCanvas()
+

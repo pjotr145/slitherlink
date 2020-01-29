@@ -42,6 +42,7 @@ class Individual():
         self.fitness = 0
         for room in self.my_rooms:
             self.fitness += room.room_score(self.gene)
+        self.fitness += self.calc_fitness_dots()
 
     def mutate_gene(self, mutation_rate):
         ''' Mutation of the gene. Mutation_rate is the max number of places
@@ -49,6 +50,7 @@ class Individual():
             made but most of the time multiple changes should occur.
         '''
         number_of_changes = np.random.randint(mutation_rate)
+#        number_of_changes = mutation_rate
         genes_to_change = random.sample(range(len(self.gene)),
                                         number_of_changes)
         for i in genes_to_change:
@@ -63,4 +65,16 @@ class Individual():
         '''
         for i in self.walls:
             self.gene[i] = 1
+
+    def calc_fitness_dots(self):
+        all_dots_score = 0
+        for dot in self.dot_wall_indices:
+            dot_score = 0
+            for index in dot:
+                dot_score += self.gene[index]
+            if dot_score == 4:
+                all_dots_score += 2
+            elif dot_score == 1 or dot_score == 3:
+                all_dots_score += 1
+        return all_dots_score
 

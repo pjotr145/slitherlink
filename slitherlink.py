@@ -42,7 +42,13 @@ dot_wall_indices = get_dots_wall_indices(int((len(content) + 1) / 2))
 #print("Walls: {}".format(wall_index_per_room))
 
 frame = gui.Window()
-frame.geometry("{0}x{1}".format(1024, 1024))
+print(frame.winfo_screenheight())
+frame.geometry("{}x{}+{}+0".format(frame.winfo_screenheight(),
+                                   frame.winfo_screenheight(),
+                                   int(frame.winfo_screenwidth()/2)))
+frame.update()
+print(frame.winfo_screenheight())
+frame.set_schermhoogte(frame.winfo_screenheight())
 population = Population(gene_length,
                         all_walls_index,
                         all_rooms,
@@ -52,7 +58,10 @@ population = Population(gene_length,
                         SETTINGS)
 population.calc_fitnesses()
 population.sort_pop_on_fitness()
-print("Generatie: {:>3} -> Fittest ind: {}".format(0, population.pop[0].fitness))
+#print("Generatie: {:>3} -> Fittest ind: {}".format(0, population.pop[0].fitness))
+print("Generatie: {:>3} -> Fittest ind: {:>3} -> worst: {:>3}".format(0,
+                                                                      population.pop[0].fitness,
+                                                                      population.pop[-1].fitness))
 #frame.teken_puzzle(int((len(content) + 1) / 2), population.pop[0].gene)
 gene_to_print = split_gene_into_puzzle(9, population.pop[0].gene)
 frame.setWaardes(rooms_to_print, gene_to_print)
@@ -60,14 +69,16 @@ frame.setWaardes(rooms_to_print, gene_to_print)
 #print("Walls: {}".format(all_walls))
 #print("Walls: {}".format(find_index_all_ones(all_walls)))
 for generation_count in range(1, 1 + SETTINGS["aant_generaties"]):
-    population.get_new_pop_superras()
+#    population.get_new_pop_superras()
+    population.get_new_pop_elitism()
     # TODO: still needs mutation of the new genes
     population.calc_fitnesses()
     population.sort_pop_on_fitness()
     gene_to_print = split_gene_into_puzzle(9, population.pop[0].gene)
     frame.setWaardes(rooms_to_print, gene_to_print)
     frame.update()
-    print("Generatie: {:>3} -> Fittest ind: {}".format(generation_count,
-                                                       population.pop[0].fitness))
+    print("Generatie: {:>3} -> Fittest ind: {:>3} -> worst: {:>3}".format(generation_count,
+                                                       population.pop[0].fitness,
+                                                       population.pop[-1].fitness))
 print("Einde!")
 frame.mainloop()
