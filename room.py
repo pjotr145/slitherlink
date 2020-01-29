@@ -6,9 +6,10 @@ import numpy
 class Room():
     ''' Defenition of a single room.
     '''
-    def __init__(self, value, walls):
+    def __init__(self, value, walls, index):
         self.value = value
         self.walls = walls
+        self.room_index = index
 #        print("single room : {}".format(self.value))
 #        print("room indexes: {}".format(self.walls))
 

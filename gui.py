@@ -10,6 +10,7 @@ class Window(Tk):
 #        self['bg'] = 'red'
         #self.minsize("600x400")
         self.schermhoogte = 600
+        self.bad_indices = []
         self.lijst_kamer_waardes = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
                                     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
                                     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -63,11 +64,19 @@ class Window(Tk):
         # Print de waardes van de gegeven kamers.
         for r in range(len(self.lijst_kamer_waardes)):
             for n in range(len(self.lijst_kamer_waardes[r])):
-                self.canvas.create_text(x * pixels + pixels / 2,
-                                        y * pixels + pixels / 2,
-                                        font=('Arial', font),
-                                        fill="black",
-                                        text=self.lijst_kamer_waardes[r][n])
+                my_text = self.lijst_kamer_waardes[r][n]
+                if r * 9 + n in self.bad_indices:
+                    self.canvas.create_text(x * pixels + pixels / 2,
+                                            y * pixels + pixels / 2,
+                                            font=('Arial', font),
+                                            fill="red",
+                                            text=my_text)
+                else:
+                    self.canvas.create_text(x * pixels + pixels / 2,
+                                            y * pixels + pixels / 2,
+                                            font=('Arial', font),
+                                            fill="black",
+                                            text=my_text)
                 x += 1
             x = 1
             y += 1
@@ -101,9 +110,10 @@ class Window(Tk):
         self.canvas.pack(fill=BOTH, expand=1)
 
 
-    def setWaardes(self, kamer_waardes, lijnen):
+    def setWaardes(self, kamer_waardes, lijnen, bad_indices):
         self.lijst_kamer_waardes = kamer_waardes
         self.lijst_lijnen = lijnen
+        self.bad_indices = bad_indices
         self.canvas.delete("all")
         self.maakCanvas()
 

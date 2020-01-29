@@ -29,7 +29,7 @@ class Individual():
         # Create list of rooms for each room with a value
         self.my_rooms = []
         for i in self.room_value_index:
-            new_room = Room(self.rooms[i], self.wall_indexes[i])
+            new_room = Room(self.rooms[i], self.wall_indexes[i], i)
             self.my_rooms.append(new_room)
 #        print("ind: rooms: {}".format(self.my_rooms))
 
@@ -43,6 +43,15 @@ class Individual():
         for room in self.my_rooms:
             self.fitness += room.room_score(self.gene)
         self.fitness += self.calc_fitness_dots()
+
+    def get_bad_rooms_indices(self):
+        ''' Returns a list with the indices of the rooms with bad score.
+        '''
+        bad_indices = []
+        for room in self.my_rooms:
+            if room.room_score(self.gene) != 0:
+                bad_indices.append(room.room_index)
+        return bad_indices
 
     def mutate_gene(self, mutation_rate):
         ''' Mutation of the gene. Mutation_rate is the max number of places

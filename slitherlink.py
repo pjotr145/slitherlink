@@ -33,8 +33,9 @@ dot_wall_indices = get_dots_wall_indices(int((len(content) + 1) / 2))
 #    print("{:>3})  {}".format(idx, val))
 #
 #print("len rooms      : {}".format(len(all_rooms)))
+print("rooms      : {}".format(all_rooms))
 #print("len walls      : {}".format(len(all_walls)))
-#print("len walls w val: {}".format(len(room_with_value_index)))
+print("walls w val: {}".format(room_with_value_index))
 #print("R-val: {}".format(room_with_value_index))
 #print("Rooms: {}".format(all_rooms))
 #print("Walls: {}".format(all_walls))
@@ -58,27 +59,29 @@ population = Population(gene_length,
                         SETTINGS)
 population.calc_fitnesses()
 population.sort_pop_on_fitness()
-#print("Generatie: {:>3} -> Fittest ind: {}".format(0, population.pop[0].fitness))
-print("Generatie: {:>3} -> Fittest ind: {:>3} -> worst: {:>3}".format(0,
-                                                                      population.pop[0].fitness,
-                                                                      population.pop[-1].fitness))
-#frame.teken_puzzle(int((len(content) + 1) / 2), population.pop[0].gene)
+print("Generatie: {:>3} -> Fittest ind: {:>3} -> worst: {:>3}".
+      format(0,
+             population.pop[0].fitness,
+             population.pop[-1].fitness))
 gene_to_print = split_gene_into_puzzle(9, population.pop[0].gene)
-frame.setWaardes(rooms_to_print, gene_to_print)
+frame.setWaardes(rooms_to_print, gene_to_print, [])
 
-#print("Walls: {}".format(all_walls))
-#print("Walls: {}".format(find_index_all_ones(all_walls)))
 for generation_count in range(1, 1 + SETTINGS["aant_generaties"]):
 #    population.get_new_pop_superras()
     population.get_new_pop_elitism()
-    # TODO: still needs mutation of the new genes
     population.calc_fitnesses()
     population.sort_pop_on_fitness()
     gene_to_print = split_gene_into_puzzle(9, population.pop[0].gene)
-    frame.setWaardes(rooms_to_print, gene_to_print)
+    frame.setWaardes(rooms_to_print,
+                     gene_to_print,
+                     population.pop[0].get_bad_rooms_indices())
     frame.update()
-    print("Generatie: {:>3} -> Fittest ind: {:>3} -> worst: {:>3}".format(generation_count,
-                                                       population.pop[0].fitness,
-                                                       population.pop[-1].fitness))
+    print("Generatie: {:>3} -> Fittest ind: {:>3} -> Elite: {:>3} -> worst: {:>3}".
+          format(generation_count,
+                 population.pop[0].fitness,
+                 population.pop[SETTINGS['elite_size'] - 1].fitness,
+                 population.pop[-1].fitness))
+    if population.pop[0].fitness < 3:
+        break
 print("Einde!")
 frame.mainloop()
