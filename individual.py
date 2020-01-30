@@ -22,7 +22,8 @@ class Individual():
         self.wall_indexes = wall_index_per_room
         self.room_value_index = room_value_index
         self.dot_wall_indices = dot_wall_indices
-        self.fitness = 0
+        self.fitness = 0.01   # Not 0 because of selection criteria
+        self.selection_chance = 1
 
 #        print("ind: rooms: {}".format(self.rooms))
 #        print("ind: index: {}".format(self.room_value_index))
@@ -43,6 +44,11 @@ class Individual():
         for room in self.my_rooms:
             self.fitness += room.room_score(self.gene)
         self.fitness += self.calc_fitness_dots()
+
+    def calc_selection_chance(self):
+        ''' Calc chance to select this individual. High fitness is bad.
+        '''
+        self.selection_chance = 1 / self.fitness
 
     def get_bad_rooms_indices(self):
         ''' Returns a list with the indices of the rooms with bad score.

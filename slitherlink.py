@@ -68,7 +68,8 @@ frame.setWaardes(rooms_to_print, gene_to_print, [])
 
 for generation_count in range(1, 1 + SETTINGS["aant_generaties"]):
 #    population.get_new_pop_superras()
-    population.get_new_pop_elitism()
+    population.get_new_pop_elitism_super()
+#    population.get_new_pop_roulette()
     population.calc_fitnesses()
     population.sort_pop_on_fitness()
     gene_to_print = split_gene_into_puzzle(9, population.pop[0].gene)
@@ -80,13 +81,10 @@ for generation_count in range(1, 1 + SETTINGS["aant_generaties"]):
           format(generation_count,
                  population.pop[0].fitness,
                  population.pop[SETTINGS['elite_size'] - 1].fitness,
-                 population.pop[-1].fitness))
+                 len(population.pop)))
+#                 population.pop[-1].fitness))
     if population.pop[0].fitness < 1:
         break
-#uniqueness = []
-#for pop in population.pop[:SETTINGS['elite_size']]:
-#    uniqueness.append(list(pop.gene))
-#print("Diversiteit: {}".format(len(set(tuple(i) for i in uniqueness))))
 print("Diversiteit: {}".format(population.get_diversity()))
 print("Einde!")
 frame.mainloop()
