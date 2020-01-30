@@ -3,7 +3,7 @@
 
 import glob
 import numpy as np
-from itertools import islice
+from itertools import islice, accumulate
 
 
 def list_file_names(globber):
@@ -207,3 +207,8 @@ def split_gene_into_puzzle(dimension, gene):
     it = iter(gene)
     split_list = _create_split_list(dimension)
     return [list(islice(it, i)) for i in split_list]
+
+def  get_accumulate(lijst):
+    ''' Returns accumulated list of input-list
+    '''
+    return list(accumulate(lijst))

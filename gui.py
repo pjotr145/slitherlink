@@ -66,17 +66,14 @@ class Window(Tk):
             for n in range(len(self.lijst_kamer_waardes[r])):
                 my_text = self.lijst_kamer_waardes[r][n]
                 if r * 9 + n in self.bad_indices:
-                    self.canvas.create_text(x * pixels + pixels / 2,
-                                            y * pixels + pixels / 2,
-                                            font=('Arial', font),
-                                            fill="red",
-                                            text=my_text)
+                    colour_fill = "red"
                 else:
-                    self.canvas.create_text(x * pixels + pixels / 2,
-                                            y * pixels + pixels / 2,
-                                            font=('Arial', font),
-                                            fill="black",
-                                            text=my_text)
+                    colour_fill = "black"
+                self.canvas.create_text(x * pixels + pixels / 2,
+                                        y * pixels + pixels / 2,
+                                        font=('Arial', font),
+                                        fill=colour_fill,
+                                        text=my_text)
                 x += 1
             x = 1
             y += 1

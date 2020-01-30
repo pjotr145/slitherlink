@@ -3,6 +3,7 @@
 
 import random
 from individual import Individual
+from hulp import get_accumulate
 import numpy as np
 
 
@@ -75,6 +76,61 @@ class Population():
 #        for ind, gene in enumerate(self.pop):
 #            print("ind: {:>3} has fitness: {}".format(ind, gene.fitness))
 
+    def get_diversity(self):
+        ''' Returns number of unique genes in first elite_size
+            part of population. represents diversity.  ;-)
+        '''
+        uniqueness = []
+        for ind in self.pop[:self.settings['elite_size']]:
+            uniqueness.append(list(ind.gene))
+        return len(uniqueness)
+
+    def calc_selection_weights(self):
+        ''' Returns list with individual chances for selection.
+        '''
+        sel_weigths = []
+        for pop in self.pop:
+            pop.calc_selection_chance()
+            sel_weigths.append(pop.selection_chance)
+        return sel_weigths
+
+    def get_new_pop_roulette(self):
+        new_pop = []
+        acccum_weights = get_accumulate(self.calc_selection_weights())
+        for _ in range(int((self.settings['population_size']) / 2)):
+            parents = random.choices(self.pop, cum_weights=acccum_weights, k=2)
+            gene1 = parents[0].gene
+            gene2 = parents[1].gene
+            split = np.random.randint(self.gene_length)
+            gene_a = np.append(gene1[:split], gene2[split:])
+            gene_b = np.append(gene2[:split], gene1[split:])
+            new_pop.append(self.create_one_individual(gene_a))
+            new_pop.append(self.create_one_individual(gene_b))
+        for individual in new_pop:
+            individual.mutate_gene(self.settings['mutation_rate'])
+            individual.set_fixed_walls()
+        self.pop = new_pop
+
+
+    def get_new_pop_elitism(self):
+        self.sort_pop_on_fitness()
+        new_pop = self.pop[0:self.settings['elite_size']]
+        acccum_weights = get_accumulate(self.calc_selection_weights())
+        for _ in range(int((self.settings['population_size'] -
+                            self.settings['elite_size']) / 2)):
+            parents = random.choices(self.pop, cum_weights=acccum_weights, k=2)
+            gene1 = parents[0].gene
+            gene2 = parents[1].gene
+            split = np.random.randint(self.gene_length)
+            gene_a = np.append(gene1[:split], gene2[split:])
+            gene_b = np.append(gene2[:split], gene1[split:])
+            new_pop.append(self.create_one_individual(gene_a))
+            new_pop.append(self.create_one_individual(gene_b))
+        for individual in new_pop:
+            individual.mutate_gene(self.settings['mutation_rate'])
+            individual.set_fixed_walls()
+        self.pop = new_pop
+
     def get_new_pop_superras(self):
         ''' Create new generation following the Superras method.
         '''
@@ -93,7 +149,7 @@ class Population():
             individual.set_fixed_walls()
         self.pop = new_pop
 
-    def get_new_pop_elitism(self):
+    def get_new_pop_elitism_super(self):
         ''' Create a new generation following the Elitism method.
         '''
         select_pop = []
@@ -101,7 +157,8 @@ class Population():
         new_pop = self.pop[0:self.settings['elite_size']]
         for i in new_pop:
             select_pop.append(i)
-        for _ in range(int((self.settings['population_size'] - 2) / 2)):
+        for _ in range(int((self.settings['population_size'] -
+                            self.settings['elite_size']) / 2)):
             breed = random.sample(select_pop, 2)
             split = np.random.randint(self.gene_length)
 #            print("Breed: {}".format(breed[0].gene))
