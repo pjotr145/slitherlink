@@ -75,6 +75,12 @@ class Population():
 #        for ind, gene in enumerate(self.pop):
 #            print("ind: {:>3} has fitness: {}".format(ind, gene.fitness))
 
+    def get_diversity(self):
+        uniqueness = []
+        for ind in self.pop[:self.settings['elite_size']]:
+            uniqueness.append(list(ind.gene))
+        return len(uniqueness)
+
     def get_new_pop_superras(self):
         ''' Create new generation following the Superras method.
         '''

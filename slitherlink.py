@@ -83,9 +83,10 @@ for generation_count in range(1, 1 + SETTINGS["aant_generaties"]):
                  population.pop[-1].fitness))
     if population.pop[0].fitness < 1:
         break
-uniqueness = []
-for pop in population.pop[:SETTINGS['elite_size']]:
-    uniqueness.append(list(pop.gene))
-print("Diversiteit: {}".format(len(set(tuple(i) for i in uniqueness))))
+#uniqueness = []
+#for pop in population.pop[:SETTINGS['elite_size']]:
+#    uniqueness.append(list(pop.gene))
+#print("Diversiteit: {}".format(len(set(tuple(i) for i in uniqueness))))
+print("Diversiteit: {}".format(population.get_diversity()))
 print("Einde!")
 frame.mainloop()
