@@ -1,4 +1,4 @@
-aant_generaties: 100
-population_size: 5000
-mutation_rate: 50
-elite_size: 300
+aant_generaties: 1000
+population_size: 1000
+mutation_rate: 100
+elite_size: 50
