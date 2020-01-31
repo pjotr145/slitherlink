@@ -61,8 +61,8 @@ class Individual():
 
     def mutate_gene(self, mutation_rate):
         ''' Mutation of the gene. Mutation_rate is the max number of places
-            that a gene can change. There is a change that 0 changes will be
-            made but most of the time multiple changes should occur.
+            that a gene can change. A random number < mutation_rate amount
+            of places will be changed. The positions are randomly chosen too.
         '''
         number_of_changes = np.random.randint(mutation_rate)
 #        number_of_changes = mutation_rate
@@ -82,6 +82,9 @@ class Individual():
             self.gene[i] = 1
 
     def calc_fitness_dots(self):
+        ''' Checks if the amount of walls connected to a dot. Zero or two is
+            good. One or three is 1 point and four is 2 points.
+        '''
         all_dots_score = 0
         for dot in self.dot_wall_indices:
             dot_score = 0
