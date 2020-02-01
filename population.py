@@ -83,7 +83,8 @@ class Population():
         uniqueness = []
         for ind in self.pop[:self.settings['elite_size']]:
             uniqueness.append(list(ind.gene))
-        return len(uniqueness)
+#        set(tuple(i) for i in l)
+        return len(set(tuple(i) for i in uniqueness))
 
     def calc_selection_weights(self):
         ''' Returns list with individual chances for selection.
@@ -95,10 +96,13 @@ class Population():
         return sel_weigths
 
     def get_new_pop_roulette(self):
+        ''' Creates new pop with roulette wheel selection. The whole
+            population is used as the pool of parents.
+        '''
         new_pop = []
-        acccum_weights = get_accumulate(self.calc_selection_weights())
+        accum_weights = get_accumulate(self.calc_selection_weights())
         for _ in range(int((self.settings['population_size']) / 2)):
-            parents = random.choices(self.pop, cum_weights=acccum_weights, k=2)
+            parents = random.choices(self.pop, cum_weights=accum_weights, k=2)
             gene1 = parents[0].gene
             gene2 = parents[1].gene
             split = np.random.randint(self.gene_length)
@@ -113,12 +117,20 @@ class Population():
 
 
     def get_new_pop_elitism(self):
+        ''' Creates new pop following elitism method. Best individuals
+            are kept and rest is created with roulette wheel selection.
+        '''
+        accum_weights = get_accumulate(self.calc_selection_weights())
+#        print("Old weights: {}".format(accum_weights[:5]))
+#        print("Old Pop    : {}".format([id(ind) for ind in self.pop[:5]]))
         self.sort_pop_on_fitness()
         new_pop = self.pop[0:self.settings['elite_size']]
-        acccum_weights = get_accumulate(self.calc_selection_weights())
+        accum_weights = get_accumulate(self.calc_selection_weights())
+#        print("New weights: {}".format(accum_weights[:5]))
+#        print("New Pop    : {}".format([id(ind) for ind in self.pop[:5]]))
         for _ in range(int((self.settings['population_size'] -
                             self.settings['elite_size']) / 2)):
-            parents = random.choices(self.pop, cum_weights=acccum_weights, k=2)
+            parents = random.choices(self.pop, cum_weights=accum_weights, k=2)
             gene1 = parents[0].gene
             gene2 = parents[1].gene
             split = np.random.randint(self.gene_length)
@@ -126,7 +138,7 @@ class Population():
             gene_b = np.append(gene2[:split], gene1[split:])
             new_pop.append(self.create_one_individual(gene_a))
             new_pop.append(self.create_one_individual(gene_b))
-        for individual in new_pop:
+        for individual in new_pop[self.settings['elite_size']:]:
             individual.mutate_gene(self.settings['mutation_rate'])
             individual.set_fixed_walls()
         self.pop = new_pop
@@ -150,7 +162,9 @@ class Population():
         self.pop = new_pop
 
     def get_new_pop_elitism_super(self):
-        ''' Create a new generation following the Elitism method.
+        ''' Create a new generation following a mix of Superras and
+            Elitism method. The best are kept and rest is created with
+            these best as the pool of parents.
         '''
         select_pop = []
         self.sort_pop_on_fitness()
