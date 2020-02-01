@@ -1,6 +1,7 @@
 ''' class definition for the individuals. '''
 
 import random
+import math
 import numpy as np
 from room import Room
 
@@ -22,7 +23,7 @@ class Individual():
         self.wall_indexes = wall_index_per_room
         self.room_value_index = room_value_index
         self.dot_wall_indices = dot_wall_indices
-        self.fitness = 0.01   # Not 0 because of selection criteria
+        self.fitness = 0
         self.selection_chance = 1
 
 #        print("ind: rooms: {}".format(self.rooms))
@@ -41,14 +42,16 @@ class Individual():
         '''
         # TODO: add better solution for fitness calculation.
         self.fitness = 0
-        for room in self.my_rooms:
-            self.fitness += room.room_score(self.gene)
+#        for room in self.my_rooms:
+#            self.fitness += room.room_score(self.gene)
+        self.fitness += self.calc_fitness_rooms()
         self.fitness += self.calc_fitness_dots()
 
     def calc_selection_chance(self):
         ''' Calc chance to select this individual. High fitness is bad.
         '''
-        self.selection_chance = 1 / self.fitness
+#        self.selection_chance = 1 / self.fitness
+        self.selection_chance = math.exp(-self.fitness)
 
     def get_bad_rooms_indices(self):
         ''' Returns a list with the indices of the rooms with bad score.
@@ -80,6 +83,17 @@ class Individual():
         '''
         for i in self.walls:
             self.gene[i] = 1
+
+    def calc_fitness_rooms(self):
+        ''' Checks if number or walls around the rooms with a number
+            are equal to that number. For each wall less/more receives
+            one extra point.
+        '''
+        all_rooms_score = 0
+        for room in self.my_rooms:
+            all_rooms_score += room.room_score(self.gene)
+        return all_rooms_score
+
 
     def calc_fitness_dots(self):
         ''' Checks if the amount of walls connected to a dot. Zero or two is

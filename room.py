@@ -1,7 +1,7 @@
 ''' Class definition of a single room with a given value.
 '''
 
-import numpy
+#import numpy
 
 class Room():
     ''' Defenition of a single room.
@@ -16,6 +16,7 @@ class Room():
     def room_score(self, list_of_walls):
         ''' Calculate the score for this room.
             room_score = 0 if nmr. walls = self.value
+            For each room less/extra the score increases one point.
         '''
         score = 0
         for i in self.walls:

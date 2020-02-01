@@ -38,7 +38,7 @@ dot_wall_indices = get_dots_wall_indices(int((len(content) + 1) / 2))
 #print("walls w val: {}".format(room_with_value_index))
 #print("R-val: {}".format(room_with_value_index))
 #print("Rooms: {}".format(all_rooms))
-#print("Walls: {}".format(all_walls))
+print("Walls: {}".format(all_walls))
 #print("Print: {}".format(rooms_to_print))
 #print("Walls: {}".format(wall_index_per_room))
 
@@ -64,19 +64,20 @@ print("Generatie: {:>3} -> Fittest ind: {:>3} -> Worst: {:>3}".
              population.pop[0].fitness,
              population.pop[-1].fitness))
 gene_to_print = split_gene_into_puzzle(9, population.pop[0].gene)
-frame.setWaardes(rooms_to_print, gene_to_print, [])
+frame.setWaardes(rooms_to_print, gene_to_print, [], [])
 
 for generation_count in range(1, 1 + SETTINGS["aant_generaties"]):
 #    population.get_new_pop_superras()
-    population.get_new_pop_elitism_super()
-#    population.get_new_pop_roulette()
+#    population.get_new_pop_elitism_super()
+    population.get_new_pop_roulette()
 #    population.get_new_pop_elitism()
     population.calc_fitnesses()
     population.sort_pop_on_fitness()
     gene_to_print = split_gene_into_puzzle(9, population.pop[0].gene)
     frame.setWaardes(rooms_to_print,
                      gene_to_print,
-                     population.pop[0].get_bad_rooms_indices())
+                     population.pop[0].get_bad_rooms_indices(),
+                     all_walls_index)
     frame.update()
     print("Generatie: {:>3} -> Fittest ind: {:>3} -> Elite: {:>3} -> Worst: {:>3}".
           format(generation_count,

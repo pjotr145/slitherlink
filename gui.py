@@ -11,6 +11,7 @@ class Window(Tk):
         #self.minsize("600x400")
         self.schermhoogte = 600
         self.bad_indices = []
+        self.fixed_walls = []
         self.lijst_kamer_waardes = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
                                     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
                                     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -84,11 +85,15 @@ class Window(Tk):
                 # print vertical lines
                 for j in range(len(self.lijst_lijnen[i])):
                     if self.lijst_lijnen[i][j] == 1:
+                        if (i * 9 + int((i - 1) / 2)) + j in self.fixed_walls:
+                            breedte = 6
+                        else:
+                            breedte = 2
                         self.canvas.create_line(x * pixels,
                                                 pixels * y,
                                                 x * pixels,
                                                 pixels * y + pixels,
-                                                width=2,
+                                                width=breedte,
                                                 fill="black")
                     x+=1
                 y+=1
@@ -96,21 +101,26 @@ class Window(Tk):
                 # print horizontal lines
                 for j in range(len(self.lijst_lijnen[i])):
                     if self.lijst_lijnen[i][j] == 1:
+                        if (i * 9 + int(i / 2)) + j in self.fixed_walls:
+                            breedte = 6
+                        else:
+                            breedte = 2
                         self.canvas.create_line(x * pixels,
                                                 pixels * y,
                                                 x * pixels + pixels,
                                                 pixels * y,
-                                                width=2,
+                                                width=breedte,
                                                 fill="black")
                     x += 1
             x=1
         self.canvas.pack(fill=BOTH, expand=1)
 
 
-    def setWaardes(self, kamer_waardes, lijnen, bad_indices):
+    def setWaardes(self, kamer_waardes, lijnen, bad_indices, fixed_walls):
         self.lijst_kamer_waardes = kamer_waardes
         self.lijst_lijnen = lijnen
         self.bad_indices = bad_indices
+        self.fixed_walls = fixed_walls
         self.canvas.delete("all")
         self.maakCanvas()
 

@@ -1,4 +1,4 @@
-aant_generaties: 1000
+aant_generaties: 5
 population_size: 3000
 mutation_rate: 25
 elite_size: 1000
